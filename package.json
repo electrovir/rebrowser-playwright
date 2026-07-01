@@ -3,7 +3,7 @@
   "publishConfig": {
       "access": "public"
   },
-  "version": "1.61.1",
+  "version": "1.61.101",
   "description": "A drop-in replacement for playwright patched with rebrowser-patches. It allows to pass modern automation detection tests.",
   "keywords": [
     "rebrowser",
@@ -76,7 +76,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "playwright-core": "npm:@electrovir/rebrowser-playwright-core@~1.61.1"
+    "playwright-core": "npm:@electrovir/rebrowser-playwright-core@~1.61.101"
   },
   "optionalDependencies": {
     "fsevents": "2.3.2"

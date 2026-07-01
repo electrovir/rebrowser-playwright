@@ -38,6 +38,22 @@ this package is mostly mechanical; the real work is in the core repo.
 
 ---
 
+## 1.5. Versioning scheme
+
+Kept in lockstep with the core package. The first two segments track the upstream Playwright
+version; the patch segment is fork-local and encodes `<upstream-patch><fork-revision>` (zero-padded),
+so it always sorts *after* the upstream release while staying pinned to a recognizable base:
+
+- `1.61.100` → based on Playwright `1.61.1`, fork revision `00` (initial publish for this base).
+- Fork-only fix that does *not* change the Playwright version → `1.61.101`, then `1.61.102`, …
+- New upstream base `1.61.2` → fork versions restart at `1.61.200`.
+
+**Never** use a pre-release tag (`1.61.1-fix.1`) for a fork fix: pre-releases sort *before* `1.61.1`
+and are excluded from normal `^`/`~` ranges. Bump the fork revision (both packages, in lockstep) on
+every publish, and reset it when the upstream base changes.
+
+---
+
 ## 2. Upgrade procedure (wrapper)
 
 Do the **core** upgrade first (see its guide) and publish it, because this package depends on the
@@ -49,8 +65,7 @@ new core version existing on the registry.
 
 2. **Re-apply the fork's identity in `package.json`** (these are the bits upstream won't have):
    - `name`: `@electrovir/rebrowser-playwright`
-   - `version`: match the Playwright version (keep wrapper version == core version == Playwright
-     version, e.g. all `1.62.0`).
+   - `version`: follow the versioning scheme below (keep wrapper version == core version).
    - `dependencies.playwright-core`:
      `"npm:@electrovir/rebrowser-playwright-core@~<target>"` ← **the critical line.** Without this
      alias the wrapper would pull stock `playwright-core` and lose all stealth.
@@ -100,7 +115,7 @@ consumers.
 ## 5. Checklist
 
 - [ ] Core upgraded, patched, tested (`npm run test:all` green there), and published first.
-- [ ] Wrapper `name` = `@electrovir/rebrowser-playwright`, `version` matches Playwright.
+- [ ] Wrapper `name` = `@electrovir/rebrowser-playwright`, `version` follows the scheme (§1.5) and == core version.
 - [ ] `dependencies.playwright-core` = `npm:@electrovir/rebrowser-playwright-core@~<version>`.
 - [ ] `publishConfig.access: public` if needed.
 - [ ] `grep -rE "__re__|REBROWSER_PATCHES" lib/` → no matches (wrapper stays stealth-free).
